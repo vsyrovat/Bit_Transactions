@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Withdrawals Manager{% endblock %}</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 pull-right text-right">
+            <p>{% if app.user.logged %}
+                    <img src="/assets/img/user.png" alt=""> {{ app.user.username }} <a href="{{ url('logout') }}">logout</a>
+                {% else %}
+                    <a href="{{ url('login') }}">Login</a>
+                {% endif %}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="flash">
+                {% for type, flashMessages in app.session.flashbag.all() %}
+                    {% for idx, flashMessage in flashMessages %}
+                        <div class="alert alert-{{ type }}">{{ flashMessage|trans|trim }}</div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <h1>{% block h1 %}Please log in{% endblock %}</h1>
+    {% block body %}{% endblock %}
+</div>
+
+<script type="text/javascript" src="{{ file_with_mtime('/assets/jquery/jquery-3.3.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ file_with_mtime('/assets/bootstrap/js/bootstrap.min.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,38 @@
+{#
+Required variables:
+    bool   paginator.enableToStart  - whether to display "to begin" (<<) link
+    bool   paginator.enableToPrev   - whether to display "to end" (>>) link
+    bool   paginator.enableToNext   - whether to display "previous" (<) link
+    bool   paginator.enableToEnd    - whether to display "next" (>) link
+    int    paginator.pageId         - current page number
+    int    paginator.startNum       - first page number
+    int    paginator.endNum         - last page number
+    bool   paginator.enablePreDots  - whether to display dots after first page link (1 ... 2 3)
+    bool   paginator.enablePostDots - whether to display dots before last page link (18 19 ... 20)
+    bool   paginator.enableFirst    - whether to display first page link
+    bool   paginator.enableLast     - whether to display last page link
+    array  paginator.pre            - numbers and urls of pages before current
+    array  paginator.post           - numbers and urls of pages after current
+    string paginator.linkToStart    - url for "to begin" (<<) link
+    string paginator.linkToPrev     - url for "previous" (<) link
+    string paginator.linkToNext     - url for "next" (>) link
+    string paginator.linkToEnd      - url for "to end" (>>) link
+#}
+
+<span>{{ paginator.countFrom }}..{{ paginator.countTo }} of {{ paginator.countTotal }}</span>
+<br>
+<span>{% if paginator.enableToStart %}<a href="{{ paginator.linkToStart }}">&lt;&lt;</a>{% else %}&lt;&lt;{% endif %}</span>
+<span class="toprev">{% if paginator.enableToPrev %}<a href="{{ paginator.linkToPrev }}">&lt; </a>{% else %}&lt; {% endif %}</span>
+{% if paginator.enableFirst %}<span><a class="digit" href="{{ paginator.linkToStart }}">{{ paginator.startNum }}</a>{% endif %}</span>
+{% if paginator.enablePredots %}<span>...</span>{% endif %}
+{% for id, url in paginator.pre %}
+    <span><a class="digit" href="{{ url }}">{{ id }}</a></span>
+{% endfor %}
+<span class="now">{{ paginator.pageId }}</span>
+{% for id, url in paginator.post %}
+    <span><a class="digit" href="{{ url }}">{{ id }}</a></span>
+{% endfor %}
+{% if paginator.enablePostDots %}<span>...</span>{% endif %}
+{% if paginator.enableLast %}<span><a class="digit" href="{{ paginator.linkToEnd }}">{{ paginator.endNum }}</a></span>{% endif %}
+<span class="tonext">{% if paginator.enableToNext %}<a href="{{ paginator.linkToNext }}"> next -&gt;</a>{% else %} &gt;{% endif %}</span>
+{#<span>{% if paginator.enableToEnd %}<a href="{{ paginator.linkToEnd }}">&gt;&gt;</a>{% else %}&gt;&gt;{% endif %}</span>#}

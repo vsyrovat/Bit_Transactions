@@ -1,0 +1,7 @@
+/.idea/
+/tmp/
+/var/
+/log/
+/pimple.json
+/vendor/
+/app/config/db.php
