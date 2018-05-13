@@ -21,12 +21,12 @@ class CreateUser
         $this->accountRepositoy = $accountRepository;
     }
 
-    public function run(string $username, Money $balance = null): User
+    public function run(string $username, string $password, Money $balance = null): User
     {
         try {
             $this->pdo->beginTransaction();
 
-            $user = new User($username);
+            $user = new User($username, password_hash('123456', PASSWORD_BCRYPT));
             $this->userRepository->create($user);
 
             $account = new Account($user, $balance ?: new Money(null));

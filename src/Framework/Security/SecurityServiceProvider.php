@@ -12,7 +12,7 @@ class SecurityServiceProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app['auth'] = function ($app) {
-            return new Auth($app['session'], $app['auth.users']);
+            return new Auth($app['session'], $app['auth.user_provider']);
         };
 
         $app['user'] = $app->factory(function ($app) {

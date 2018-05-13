@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Withdrawal Manager{% endblock %}</title>
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ file_with_mtime('/assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ file_with_mtime('/assets/css/app.css') }}">
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-12 pull-right text-right">
-            <p>{% if app.user.logged %}
+            <p>{% if app.user.username %}
                     <img src="/assets/img/user.png" alt=""> {{ app.user.username }} <a href="{{ url('logout') }}">logout</a>
                 {% else %}
                     <a href="{{ url('login') }}">Login</a>

@@ -5,74 +5,43 @@ declare(strict_types=1);
 namespace Framework\Security;
 
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class Auth
 {
     private $session;
-    private $users;
+    private $userProvider;
 
-    public function __construct(Session $session, array $users)
+    public function __construct(Session $session, UserProviderInterface $userProvider)
     {
         $this->session = $session;
-
-        foreach ($users as $login => $userData) {
-            if (!is_array($userData[0])) {
-                throw new \InvalidArgumentException('Grants should be array (for user '.$login.'), '.$userData[0].' given');
-            }
-            if (!is_scalar($userData[1]) && !empty($userData[1])) {
-                throw new \InvalidArgumentException('Password hash should be string (for user '.$login.') '.$userData[1].' given');
-            }
-        }
-
-        $this->users = $users;
+        $this->userProvider = $userProvider;
     }
 
     public function tryLogin(string $login, string $password): bool
     {
-        if (isset($this->users[$login])) {
-            $grants = $this->users[$login][0];
-            $hash = strval($this->users[$login][1]);
+        try {
+            $user = $this->userProvider->loadUserByUsername($login);
 
-            if (password_verify($password, $hash)) {
-                $this->session->set('user', new User($login, $grants));
+            if (password_verify($password, strval($user->getPassword()))) {
+                $this->session->set('user', $user);
                 return true;
             }
+        } catch (UsernameNotFoundException $e) {
+            password_verify($password, '$2y$10$/FEy0qFDzY3y3q9gLdjlYu0HP9IKVvk57Wsdb/XeiMY4dCWiwTYga');
         }
 
         return false;
     }
 
-    public function getUser(): User
+    public function getUser(): UserInterface
     {
-        if (!$this->session->has('user')) {
-            $user = new User();
-            $this->session->set('user', $user);
-        } else {
-            $user = $this->session->get('user');
-            $actualGrants = $this->getActualGrantsByUsername($user->getUsername());
-            if ($user->getGrants() != $actualGrants) {
-                $user->setGrants($actualGrants);
-            }
-        }
-
-        return $user;
+        return $this->session->get('user') ?: new NullUser();
     }
 
     public function isGrant(string $grant): bool
     {
-        return $this->getUser()->isGrant($grant);
-    }
-
-    protected function getActualGrantsByUsername(?string $username): array
-    {
-        if ($username === null) {
-            return [];
-        }
-
-        if (isset($this->users[$username])) {
-            return $this->users[$username][0];
-        }
-
-        return [];
+        return $this->session->get('user');
     }
 }

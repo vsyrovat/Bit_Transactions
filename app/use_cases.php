@@ -21,3 +21,11 @@ $app['app.uc.createAccount'] = function(\Framework\Application $app) {
         $app['app.dao.accountRepository']
     );
 };
+
+$app['app.uc.createWithdrawal'] = function(\Framework\Application $app) {
+    return new \App\Domain\UseCase\CreateWithdrawal(
+        $app['app.dao.pdo'],
+        $app['app.dao.accountRepository'],
+        $app['app.dao.withdrawalRepository']
+    );
+};

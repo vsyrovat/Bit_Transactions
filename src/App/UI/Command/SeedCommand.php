@@ -20,11 +20,11 @@ class SeedCommand extends Command
     {
         $app = $this->getFrameworkApplication();
 
-        $app['app.uc.createUser']->run('user1', new Money(100, 'USD'));
-        $output->writeln('Created "user1" with 100 USD');
+        $app['app.uc.createUser']->run('user1', '123456', new Money(100, 'USD'));
+        $output->writeln('Created "user1" with password "123456" and 100 USD balance');
 
-        $app['app.uc.createUser']->run('user2', new Money(200, 'USD'));
-        $output->writeln('Created "user2" with 200 USD');
+        $app['app.uc.createUser']->run('user2', '123456', new Money(200, 'USD'));
+        $output->writeln('Created "user2" with password "123456" and 200 USD balance');
     }
 
 }

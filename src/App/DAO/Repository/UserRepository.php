@@ -6,8 +6,10 @@ use App\Domain\Entity\User;
 use App\Domain\Exception\UnableCreateUserException;
 use App\Domain\Repository\UserRepositoryInterface;
 use App\Domain\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface, UserProviderInterface
 {
     private $pdo;
 
@@ -22,8 +24,11 @@ class UserRepository implements UserRepositoryInterface
             throw new UnableCreateUserException();
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO `users` SET `username`=:username");
-        $stmt->execute(['username' => $user->getUsername()]);
+        $stmt = $this->pdo->prepare("INSERT INTO `users` SET `username`=:username, `password`=:password");
+        $stmt->execute([
+            'username' => $user->getUsername(),
+            'password' => $user->getPassword(),
+        ]);
 
         $insertId = $this->pdo->lastInsertId();
 
@@ -46,12 +51,27 @@ class UserRepository implements UserRepositoryInterface
 
     private function buildObj(array $data)
     {
-        $user = new User($data['username']);
+        $user = new User($data['username'], $data['password']);
 
         $rp = new \ReflectionProperty(get_class($user), 'id');
         $rp->setAccessible(true);
         $rp->setValue($user, intval($data['id']));
 
         return $user;
+    }
+
+    public function loadUserByUsername($username)
+    {
+        return $this->getByUsername($username);
+    }
+
+    public function refreshUser(UserInterface $user)
+    {
+        return $this->getByUsername($user->getUsername());
+    }
+
+    public function supportsClass($class)
+    {
+        return $class === User::class;
     }
 }

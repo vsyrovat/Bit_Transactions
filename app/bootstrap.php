@@ -22,12 +22,10 @@ $app->register(new \Framework\Form\FormServiceProvider());
 
 //$app->register(new \Framework\Pagination\PaginationServiceProvider());
 //
-$app->register(new \Framework\Security\SecurityServiceProvider(), [
-    'auth.users' => [
-        'user' => [['ROLE_USER'], '$2y$10$/FEy0qFDzY3y3q9gLdjlYu0HP9IKVvk57Wsdb/XeiMY4dCWiwTYga'], // 123456
-    ],
-]);
-
 require_once 'routes.php';
 require_once 'dao.php';
 require_once 'use_cases.php';
+
+$app->register(new \Framework\Security\SecurityServiceProvider(), [
+    'auth.user_provider' => $app['app.dao.userRepository'],
+]);

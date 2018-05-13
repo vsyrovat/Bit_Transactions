@@ -6,3 +6,4 @@ $app->map('/login', \App\UI\Controller\DefaultController::class.'::loginAction',
 $app->map('/logout', \App\UI\Controller\DefaultController::class.'::logoutAction', 'logout');
 
 $app->map('/account', \App\UI\Controller\AccountController::class.'::indexAction', 'account');
+$app->map('/account/withdrawal/new', \App\UI\Controller\AccountController::class.'::newWithdrawalAction', 'account.new_withdrawal');

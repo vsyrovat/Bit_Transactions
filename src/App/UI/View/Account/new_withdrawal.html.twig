@@ -1,0 +1,21 @@
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% extends "layout.html.twig" %}
+
+{% block h1 %}New Withdrawal{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12 top-buffer">Available balance: {{ account.balance.amount }} {{ account.balance.currency }}</div>
+
+    <div class="col-12 top-buffer">
+        {{ form_start(form) }}
+            {{ form_row(form.amount) }}
+            <div class="row top-buffer">
+                <div class="col-6 text-left"><a type="button" class="btn btn-secondary" href="{{ url('account') }}">Back</a></div>
+                <div class="col-6 text-right"><button type="submit" class="btn btn-primary">Create Withdrawal</button></div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
