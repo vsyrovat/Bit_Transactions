@@ -10,14 +10,16 @@ $app->register(new \Framework\Console\ConsoleServiceProvider(), [
 ]);
 
 $migrator = new \Framework\Migrations\Migrator(
-    $app['app.infrastructure.pdo'],
+    $app['app.dao.pdo'],
     new \Framework\Migrations\Drivers\Mysql(),
-    APP_ROOT.'/src/Tasker/Infrastructure/Migrations',
-    '\\Tasker\\Infrastructure\\Migrations'
+    APP_ROOT.'/src/App/DAO/Migrations',
+    '\\App\\DAO\\Migrations'
 );
 
 $app['console']->add(new \Framework\Migrations\Commands\DBInit(null, $migrator));
 $app['console']->add(new \Framework\Migrations\Commands\DBCreateMigration(null, $migrator));
 $app['console']->add(new \Framework\Migrations\Commands\DBMigrate(null, $migrator));
+
+$app['console']->add(new \App\UI\Command\SeedCommand());
 
 $app['console']->run();

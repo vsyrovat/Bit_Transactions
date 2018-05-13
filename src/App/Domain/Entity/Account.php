@@ -5,27 +5,46 @@ namespace App\Domain\Entity;
 class Account
 {
     private $id;
-    private $login;
-    private $passhash;
+    private $user;
+    private $balance;
+    private $withdrawals;
 
-    public function __construct(string $login, string $passhash)
+    public function __construct(User $user, Money $balance)
     {
-        $this->login = $login;
-        $this->passhash = $passhash;
+        $this->user = $user;
+        $this->balance = $balance;
+        $this->withdrawals = [];
     }
 
+    /**
+     * @return mixed
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLogin(): string
+    /**
+     * @return User
+     */
+    public function getUser(): User
     {
-        return $this->login;
+        return $this->user;
     }
 
-    public function getPasshash(): string
+    /**
+     * @return Money
+     */
+    public function getBalance(): Money
     {
-        return $this->passhash;
+        return $this->balance;
+    }
+
+    /**
+     * @return Withdrawal[]
+     */
+    public function getWithdrawals(): array
+    {
+        return $this->withdrawals;
     }
 }

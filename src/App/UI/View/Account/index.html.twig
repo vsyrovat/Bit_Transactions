@@ -1,0 +1,30 @@
+{% extends "layout.html.twig" %}
+
+{% block h1 %}Account{% endblock %}
+
+{% block body %}
+    <div class="row alert-warning">
+        <div class="col-12">Balance: {{ account.balance.amount }} {{ account.balance.currency }}</div>
+    </div>
+
+    <div class="row" style="margin-top: 2em">
+        <div class="col-12">
+            <strong>Requested withdrawals</strong>
+        </div>
+
+        <div class="col-2 bg-info">Id</div>
+        <div class="col-3 bg-info">Date</div>
+        <div class="col-7 bg-info">Amount</div>
+
+        {% for withdrawal in account.withdrawals %}
+            <div class="col-2">{{ withdrawal.id }}</div>
+            <div class="col-3">{{ withdrawal.createdAt|date }}</div>
+            <div class="col-7">{{ withdrawal.money.amount }} {{ withdrawal.money.currency }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="row" style="margin-top: 2em;">
+        <a class="btn btn-primary">New withdrawal</a>
+    </div>
+
+{% endblock %}

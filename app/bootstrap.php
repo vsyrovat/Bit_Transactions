@@ -29,5 +29,5 @@ $app->register(new \Framework\Security\SecurityServiceProvider(), [
 ]);
 
 require_once 'routes.php';
-//require_once 'use_cases.php';
-//require_once 'dao.php';
+require_once 'dao.php';
+require_once 'use_cases.php';

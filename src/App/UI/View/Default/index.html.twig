@@ -1,2 +1,11 @@
 {% extends "layout.html.twig" %}
 
+{% block h1 %}Welcome{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ url('account') }}">Go to account</a>
+        </div>
+    </div>
+{% endblock %}
