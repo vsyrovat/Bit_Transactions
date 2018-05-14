@@ -16,3 +16,6 @@
 * In console run ```php -S 0.0.0.0:8000 -t public```
 * Open ```localhost:8000``` in browser
 * Use pairs "user1":"123456" and "user2":"123456" for login
+
+## Troubleshooting
+* In case of 'Class not found' error run ```composer dump-autoload``` in console

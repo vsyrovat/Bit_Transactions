@@ -1,4 +1,10 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/Framework",
+            "App\\": "src/App"
+        }
+    },
     "require": {
         "php": ">=7.2.0",
         "pimple/pimple": "^3.2",
