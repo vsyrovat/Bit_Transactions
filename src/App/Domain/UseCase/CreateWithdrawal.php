@@ -40,7 +40,7 @@ class CreateWithdrawal
             $this->pdo->exec('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE');
             $this->pdo->beginTransaction();
 
-            $actualUser = $this->userRepository->getByUsername($user->getUsername());
+            $actualUser = $this->userRepository->findById($user->getId());
             $actualAccount = $this->accountRepository->findById($account->getId());
 
             if ($actualAccount->getUser()->getId() === $actualUser->getId()) {
@@ -50,7 +50,7 @@ class CreateWithdrawal
 
                     $this->accountRepository->updateBalance($actualAccount, $actualAccount->getBalance()->sub($value));
                 } else {
-                    throw new \InvalidArgumentException('Requested value is more than balance');
+                    throw new \InvalidArgumentException('Requested value is bigger than balance');
                 }
             } else {
                 throw new \RuntimeException('Fail according account to user object');
