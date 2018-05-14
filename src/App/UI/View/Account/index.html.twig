@@ -14,12 +14,15 @@
 
         <div class="col-2 bg-info">Id</div>
         <div class="col-3 bg-info">Date</div>
-        <div class="col-7 bg-info">Amount</div>
+        <div class="col-3 bg-info">Amount</div>
+        <div class="col-4 bg-info">Status</div>
+
 
         {% for withdrawal in account.withdrawals %}
             <div class="col-2">{{ withdrawal.id }}</div>
             <div class="col-3">{{ withdrawal.createdAt|date }}</div>
-            <div class="col-7">{{ withdrawal.money.amount }} {{ withdrawal.money.currency }}</div>
+            <div class="col-3">{{ withdrawal.money.amount }} {{ withdrawal.money.currency }}</div>
+            <div class="col-4">{{ withdrawal.statusStr }}</div>
         {% endfor %}
     </div>
 

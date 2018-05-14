@@ -59,4 +59,14 @@ class Withdrawal
     {
         return $this->status;
     }
+
+    public function getStatusStr(): string
+    {
+        return [
+            self::STATUS_UNKNOWN => 'Unknown',
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_SUCCESS => 'Success',
+            self::STATUS_FAILURE => 'Failure',
+        ][$this->status];
+    }
 }
