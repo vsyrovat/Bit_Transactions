@@ -49,6 +49,18 @@ class UserRepository implements UserRepositoryInterface, UserProviderInterface
         return $this->buildObj($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
+    public function findById(int $id): User
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `id`=:id");
+        $stmt->execute(['id' => $id]);
+
+        if ($stmt->rowCount() == 0) {
+            throw new UserNotFoundException;
+        }
+
+        return $this->buildObj($stmt->fetch(\PDO::FETCH_ASSOC));
+    }
+
     private function buildObj(array $data)
     {
         $user = new User($data['username'], $data['password']);

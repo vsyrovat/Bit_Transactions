@@ -8,17 +8,20 @@ use App\Domain\Repository\AccountRepositoryInterface;
 use App\Domain\Entity\Money;
 use App\Domain\Entity\User;
 use App\Domain\Exception\AccountNotFoundException;
+use App\Domain\Repository\UserRepositoryInterface;
 use App\Domain\Repository\WithdrawalRepositoryInterface;
 
 class AccountRepository implements AccountRepositoryInterface
 {
     private $pdo;
     private $table = 'accounts';
+    private $userRepository;
     private $withdrawalRepository;
 
-    public function __construct(\PDO $pdo, WithdrawalRepositoryInterface $withdrawalRepository)
+    public function __construct(\PDO $pdo, UserRepositoryInterface $userRepository, WithdrawalRepositoryInterface $withdrawalRepository)
     {
         $this->pdo = $pdo;
+        $this->userRepository = $userRepository;
         $this->withdrawalRepository = $withdrawalRepository;
     }
 
@@ -42,16 +45,16 @@ class AccountRepository implements AccountRepositoryInterface
         $rpId->setValue($account, intval($insertId));
     }
 
-    public function findById(string $username): Account
+    public function findById(int $id): Account
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `{$this->table}` WHERE id=:id");
-        $stmt->execute(['username' => $username]);
+        $stmt->execute(['id' => $id]);
 
         if ($stmt->rowCount() == 0) {
             throw new AccountNotFoundException();
         }
 
-        return $this->buildObject($stmt->fetchAll(\PDO::FETCH_ASSOC));
+        return $this->buildObject($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
     public function findFirstByUser(User $user): Account
@@ -66,8 +69,22 @@ class AccountRepository implements AccountRepositoryInterface
         return $this->buildObject($stmt->fetch(\PDO::FETCH_ASSOC), $user);
     }
 
-    private function buildObject(array $data, User $user)
+    public function updateBalance(Account $account, Money $balance): void
     {
+        $stmt = $this->pdo->prepare("UPDATE `{$this->table}` SET `balance_amount`=:balanceAmount, `balance_currency`=:balanceCurrency WHERE `id`=:id");
+        $stmt->execute([
+            'balanceAmount' => $balance->getAmount(),
+            'balanceCurrency' => $balance->getCurrency(),
+            'id' => $account->getId(),
+        ]);
+    }
+
+    private function buildObject(array $data, User $user = null)
+    {
+        if ($user === null) {
+            $user = $this->userRepository->findById(intval($data['user_id']));
+        }
+
         $account = new Account($user, new Money($data['balance_amount'], $data['balance_currency']));
 
         $rpId = new \ReflectionProperty(get_class($account), 'id');

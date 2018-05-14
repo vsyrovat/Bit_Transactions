@@ -25,6 +25,7 @@ $app['app.uc.createAccount'] = function(\Framework\Application $app) {
 $app['app.uc.createWithdrawal'] = function(\Framework\Application $app) {
     return new \App\Domain\UseCase\CreateWithdrawal(
         $app['app.dao.pdo'],
+        $app['app.dao.userRepository'],
         $app['app.dao.accountRepository'],
         $app['app.dao.withdrawalRepository']
     );

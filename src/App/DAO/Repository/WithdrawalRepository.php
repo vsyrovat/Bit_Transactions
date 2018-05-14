@@ -5,6 +5,7 @@ namespace App\DAO\Repository;
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Money;
 use App\Domain\Entity\Withdrawal;
+use App\Domain\Exception\UnableCreateWithdrawalException;
 use App\Domain\Repository\WithdrawalRepositoryInterface;
 
 class WithdrawalRepository implements WithdrawalRepositoryInterface
@@ -15,6 +16,34 @@ class WithdrawalRepository implements WithdrawalRepositoryInterface
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
+    }
+
+    public function create(Withdrawal &$withdrawal): void
+    {
+        if ($withdrawal->getId()) {
+            throw new UnableCreateWithdrawalException('Withdrawal already persist. You should create new instance of Withdrawal object.');
+        }
+
+        $stmt = $this->pdo->prepare("INSERT INTO `{$this->table}` 
+SET
+  `account_id`=:accountId,
+  `money_amount`=:moneyAmount,
+  `money_currency`=:moneyCurrency,
+  `status`=:status,
+  `created_at`=:createdAt");
+        $stmt->execute([
+            'accountId' => $withdrawal->getAccount()->getId(),
+            'moneyAmount' => $withdrawal->getMoney()->getAmount(),
+            'moneyCurrency' => $withdrawal->getMoney()->getCurrency(),
+            'status' => $withdrawal->getStatus(),
+            'createdAt' => $withdrawal->getCreatedAt()->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
+        ]);
+
+        $insertId = $this->pdo->lastInsertId();
+
+        $rpId = new \ReflectionProperty(get_class($withdrawal), 'id');
+        $rpId->setAccessible(true);
+        $rpId->setValue($withdrawal, intval($insertId));
     }
 
     public function findAllByAccount(Account $account): array

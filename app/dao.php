@@ -12,7 +12,11 @@ $app['app.dao.userRepository'] = function(\Framework\Application $app) {
 };
 
 $app['app.dao.accountRepository'] = function(\Framework\Application $app) {
-    return new \App\DAO\Repository\AccountRepository($app['app.dao.pdo'], $app['app.dao.withdrawalRepository']);
+    return new \App\DAO\Repository\AccountRepository(
+        $app['app.dao.pdo'],
+        $app['app.dao.userRepository'],
+        $app['app.dao.withdrawalRepository']
+    );
 };
 
 $app['app.dao.withdrawalRepository'] = function(\Framework\Application $app) {

@@ -2,6 +2,8 @@
 
 namespace App\UI\Controller;
 
+use App\Domain\Entity\Money;
+use App\Domain\Exception\UnableCreateWithdrawalException;
 use Framework\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +45,14 @@ class AccountController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $app['app.uc.createWithdrawal']->run($account, $data['amount']);
+            try {
+                $app['app.uc.createWithdrawal']->run($app['user'], $account, new Money($data['amount'], 'USD'));
+                $app['session']->getFlashBag()->set('success', 'Withdrawal successfully created');
+            } catch (UnableCreateWithdrawalException $e) {
+                $app['session']->getFlashBag()->set('danger', 'Error creating withdrawal: '.$e->getMessage());
+            }
+
+            return new RedirectResponse($app['url_generator']->generate('account'));
         }
 
         return $app['twig']->render('Account/new_withdrawal.html.twig', [
