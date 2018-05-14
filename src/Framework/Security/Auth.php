@@ -29,6 +29,10 @@ class Auth
                 return true;
             }
         } catch (UsernameNotFoundException $e) {
+            // Protection against user bruteforce-search
+            // password_verify is time-attack-safe, so we just call it if user not found
+            // Next line make tryLogin execution time equal in both cases: when user exists and when don't
+            // '$2y$10$/FEy0qFDzY3y3q9gLdjlYu0HP9IKVvk57Wsdb/XeiMY4dCWiwTYga' == password_hash('123456', PASSWORD_BCRYPT)
             password_verify($password, '$2y$10$/FEy0qFDzY3y3q9gLdjlYu0HP9IKVvk57Wsdb/XeiMY4dCWiwTYga');
         }
 
