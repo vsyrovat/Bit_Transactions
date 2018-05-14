@@ -38,7 +38,11 @@ class AccountController
             $data = $form->getData();
 
             try {
-                $app['app.uc.createWithdrawal']->run($app['user'], $account, new Money($data['amount'], 'USD'));
+                $app['app.uc.createWithdrawal']->run(
+                    $app['user'],
+                    $account,
+                    new Money($data['amount'], $account->getBalance()->getCurrency())
+                );
                 $app['session']->getFlashBag()->set('success', 'Withdrawal successfully created');
             } catch (UnableCreateWithdrawalException $e) {
                 $app['session']->getFlashBag()->set('danger', 'Error creating withdrawal: '.$e->getMessage());
