@@ -28,4 +28,11 @@ require_once 'use_cases.php';
 
 $app->register(new \Framework\Security\SecurityServiceProvider(), [
     'auth.user_provider' => $app['app.dao.userRepository'],
+    'security.firewalls' => [
+        'account' => [
+            'pattern' => '^/account',
+            'require_role' => 'ROLE_USER',
+            'login_url' => '/login',
+        ]
+    ]
 ]);

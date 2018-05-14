@@ -50,8 +50,32 @@ class Application extends Container implements HttpKernelInterface
         }
     }
 
+    private function verifyFirewalls(Request $request): ?RedirectResponse
+    {
+       if (isset($this['security.firewalls'])) {
+           foreach ($this['security.firewalls'] as $firewallName => $firewall) {
+               if (preg_match("#{$firewall['pattern']}#", $request->getPathInfo())) {
+                   if (!isset($this['user']) ||
+                       !in_array($firewall['require_role'], $this['user']->getRoles(), true)
+                   ) {
+                       if (isset($this['user']) && $this['user']->getUsername() && !empty($this['session'])) {
+                           $this['session']->getFlashBag()->set('warning', 'You have not enough permissions for page you requested. Please log in.');
+                       }
+                       return new RedirectResponse($firewall['login_url']);
+                   }
+               }
+           }
+       }
+
+       return null;
+    }
+
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
+        if ($firewallResponse = $this->verifyFirewalls($request)) {
+            return $firewallResponse;
+        }
+
         $context = new RequestContext();
         $context->fromRequest($request);
 
@@ -61,6 +85,7 @@ class Application extends Container implements HttpKernelInterface
 
         try {
             $attributes = $matcher->match($request->getPathInfo());
+
             $controller = $attributes['controller'];
             unset($attributes['controller'], $attributes['_route']);
             $response = $controller($request, $this, $attributes);

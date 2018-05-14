@@ -7,14 +7,22 @@
         @import "{{ file_with_mtime('/assets/css/login-template.css') }}";
     </style>
 
-    <div class="row">
-        <div class="col-12">
-            {{ form_start(form, {
-                attr: {class: 'form-signin'}
-            }) }}
-            {{ form_widget(form) }}
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
-            {{ form_end(form) }}
+    {% if alreadyLoggedIn %}
+        <div class="row">
+            <div class="col-12">
+                You are already logged in. Please <a href="{{ url('logout') }}">logout</a> first and login again.
+            </div>
         </div>
-    </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                {{ form_start(form, {
+                    attr: {class: 'form-signin'}
+                }) }}
+                {{ form_widget(form) }}
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
