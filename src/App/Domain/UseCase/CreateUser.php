@@ -21,7 +21,7 @@ class CreateUser
         $this->accountRepositoy = $accountRepository;
     }
 
-    public function run(string $username, string $password, Money $balance = null): User
+    public function run(\string $username, string $password, Money $balance = null): User
     {
         try {
             $this->pdo->beginTransaction();

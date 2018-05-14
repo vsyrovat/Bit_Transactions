@@ -33,7 +33,7 @@ class CreateWithdrawal
     public function run(User $user, Account $account, Money $value)
     {
         if ($value->getAmountCent() <= 0) {
-            return new \InvalidArgumentException("Withdrawal amount should be positive");
+            throw new UnableCreateWithdrawalException("Withdrawal amount should be positive");
         }
 
         try {
@@ -50,10 +50,10 @@ class CreateWithdrawal
 
                     $this->accountRepository->updateBalance($actualAccount, $actualAccount->getBalance()->sub($value));
                 } else {
-                    throw new \InvalidArgumentException('Requested value is bigger than balance');
+                    throw new UnableCreateWithdrawalException('Requested value is bigger than balance');
                 }
             } else {
-                throw new \RuntimeException('Fail according account to user object');
+                throw new  UnableCreateWithdrawalException('Fail according account to user object');
             }
 
             $this->pdo->commit();
