@@ -6,6 +6,7 @@
 
 ## Installation
 * Clone repo and cd into dir
+* Run ```composer install```
 * Create mysql database
 * Copy ```app/config/db.example.php``` to ```app/config/db.php``` and change settings to actual
 * In console run ```bin/console db:migrate```
