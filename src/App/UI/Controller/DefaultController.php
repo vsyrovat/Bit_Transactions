@@ -17,6 +17,10 @@ class DefaultController
 
     public static function loginAction(Request $request, Application $app)
     {
+        if ($app['user']->getUsername()) {
+            return new RedirectResponse($app['url_generator']->generate('account'));
+        }
+
         $form = $app['form.factory']->createBuilder(FormType\FormType::class)
             ->setAction($app['url_generator']->generate('login'))
             ->setMethod('POST')
